@@ -1,0 +1,162 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.0 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{Alifierakis18}{online}{}
+      \name{author}{1}{}{%
+        {{hash=3626d84145a3e65cbd0bdef591d4ddab}{%
+           family={Alifierakis},
+           familyi={A\bibinitperiod},
+           given={Michail},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{3626d84145a3e65cbd0bdef591d4ddab}
+      \strng{fullhash}{3626d84145a3e65cbd0bdef591d4ddab}
+      \strng{bibnamehash}{3626d84145a3e65cbd0bdef591d4ddab}
+      \strng{authorbibnamehash}{3626d84145a3e65cbd0bdef591d4ddab}
+      \strng{authornamehash}{3626d84145a3e65cbd0bdef591d4ddab}
+      \strng{authorfullhash}{3626d84145a3e65cbd0bdef591d4ddab}
+      \field{sortinit}{A}
+      \field{sortinithash}{a3dcedd53b04d1adfd5ac303ecd5e6fa}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{8}
+      \field{journaltitle}{Towards Data Science}
+      \field{month}{1}
+      \field{title}{Using Yelp Date to Predict Restaurant Closure}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \verb{urlraw}
+      \verb https://towardsdatascience.com/using-yelp-data-to-predict-restaurant-closure-8aafa4f72ad6
+      \endverb
+      \verb{url}
+      \verb https://towardsdatascience.com/using-yelp-data-to-predict-restaurant-closure-8aafa4f72ad6
+      \endverb
+    \endentry
+    \entry{Feng16}{article}{}
+      \name{author}{3}{}{%
+        {{hash=3a697c16d19d73aa57a830522e800b65}{%
+           family={Feng},
+           familyi={F\bibinitperiod},
+           given={Jason},
+           giveni={J\bibinitperiod}}}%
+        {{hash=0317a6f278050daf1328cb21a39c3dcd}{%
+           family={Kitade},
+           familyi={K\bibinitperiod},
+           given={Naho},
+           giveni={N\bibinitperiod}}}%
+        {{hash=2ee025ce2e1464404c5f49c81199d298}{%
+           family={Ritter},
+           familyi={R\bibinitperiod},
+           given={Matthew},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{dfc4245eb878996682288235bcf08aa7}
+      \strng{fullhash}{dfc4245eb878996682288235bcf08aa7}
+      \strng{bibnamehash}{dfc4245eb878996682288235bcf08aa7}
+      \strng{authorbibnamehash}{dfc4245eb878996682288235bcf08aa7}
+      \strng{authornamehash}{dfc4245eb878996682288235bcf08aa7}
+      \strng{authorfullhash}{dfc4245eb878996682288235bcf08aa7}
+      \field{sortinit}{F}
+      \field{sortinithash}{fb0c0faa89eb6abae8213bf60e6799ea}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Dartmouth College}
+      \field{title}{Determining Restuarant Success or Failure}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb http://www.cs.dartmouth.edu/~lorenzo/teaching/cs174/Archive/Winter2015/Projects/finals/fkr.pdf
+      \endverb
+      \verb{url}
+      \verb http://www.cs.dartmouth.edu/~lorenzo/teaching/cs174/Archive/Winter2015/Projects/finals/fkr.pdf
+      \endverb
+    \endentry
+    \entry{Lu18}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=61f9be6c983aece0e30185da7b5e9e0e}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Xiaopeng},
+           giveni={X\bibinitperiod}}}%
+        {{hash=0bb4da0929507e86ad545b128cf069a3}{%
+           family={Qu},
+           familyi={Q\bibinitperiod},
+           given={Jiaming},
+           giveni={J\bibinitperiod}}}%
+        {{hash=c1cde8b8e1ae6a82b190470ee7f839cf}{%
+           family={Jiang},
+           familyi={J\bibinitperiod},
+           given={Yongxing},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=c7266ab197b376aabf769209dec24ed0}{%
+           family={Zhao},
+           familyi={Z\bibinitperiod},
+           given={Yanbing},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Pittsburgh, PA, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{1bde061b75917c1d598f785dc3615b04}
+      \strng{fullhash}{69e1549041194a84eded7d891ac9f1a2}
+      \strng{bibnamehash}{1bde061b75917c1d598f785dc3615b04}
+      \strng{authorbibnamehash}{1bde061b75917c1d598f785dc3615b04}
+      \strng{authornamehash}{1bde061b75917c1d598f785dc3615b04}
+      \strng{authorfullhash}{69e1549041194a84eded7d891ac9f1a2}
+      \field{sortinit}{L}
+      \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the Practice and Experience on Advanced Research Computing}
+      \field{isbn}{9781450364461}
+      \field{series}{PEARC ’18}
+      \field{title}{Should I Invest It? Predicting Future Success of Yelp Restaurants}
+      \field{year}{2018}
+      \verb{doi}
+      \verb 10.1145/3219104.3229287
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3219104.3229287
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3219104.3229287
+      \endverb
+      \keyw{text mining,natural language processing,advanced research computing,machine learning}
+    \endentry
+    \entry{yelp}{online}{}
+      \field{sortinit}{Y}
+      \field{sortinithash}{6ae2ff5458ff901249c2745238c951b7}
+      \field{labeltitlesource}{title}
+      \field{title}{Yelp Dataset}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb https://www.yelp.com/dataset
+      \endverb
+      \verb{url}
+      \verb https://www.yelp.com/dataset
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

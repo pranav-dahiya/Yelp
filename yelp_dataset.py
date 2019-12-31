@@ -4,6 +4,7 @@ from math import sin, cos, sqrt, atan2, radians
 from multiprocessing import Pool
 import ijson
 import numpy as np
+import random
 
 
 def dist(lat1, lon1, lat2, lon2):
@@ -22,10 +23,8 @@ def divide_chunks(l, n):
         yield l[i:i + m]
 
 
-def neighbouring_restaurants(center_business, business):
+def neighbouring_restaurants(lat, lon, business):
     neighbours = []
-    lat = radians(business.at[center_business, 'latitude'])
-    lon = radians(business.at[center_business, 'longitude'])
     neighbours = business[business.apply(lambda row: dist(lat, lon,
             radians(row['latitude']), radians(row['longitude'])) < 2, axis=1)]
     return neighbours
@@ -42,11 +41,12 @@ def category_neighbours_func(categories, neighbour_categories):
         return False
 
 
-
 def compute_relative_features(args):
     center_business = args[0]
     business = args[1]
-    neighbours = neighbouring_restaurants(center_business, business)
+    all_business = args[2]
+    neighbours = neighbouring_restaurants(radians(business.at[center_business, 'latitude']),
+            radians(business.at[center_business, 'longitude']), all_business)
     relative_stars = business.at[center_business, 'stars'] / neighbours['stars'].mean()
     relative_stars2017 = business.at[center_business, 'stars2017'] / neighbours['stars2017'].mean()
     relative_review = business.at[center_business, 'review_count'] / neighbours['review_count'].mean()
@@ -111,6 +111,29 @@ def get_review_data(fname, start, stop):
             line = f.readline()
     return (stars2017, review_count2017)
 
+'''
+
+business_ids = list()
+
+with open("yelp_dataset/review.json", "r") as f:
+    line = f.readline()
+    while line:
+        try:
+            dict = eval(line)
+            id = dict['business_id']
+            if int(dict['date'][:4]) == 2018 and not(id in business_ids):
+                business_ids.append(id)
+                #print(id)
+        except:
+            pass
+        line = f.readline()
+
+with open("business_ids.pickle", "wb") as f:
+    pickle.dump(business_ids, f)
+
+print(len(business_ids))
+exit(0)
+
 
 with open("yelp_dataset/business.json", "rb") as f:
     business = pd.read_json(f, lines=True)
@@ -118,9 +141,96 @@ with open("yelp_dataset/business.json", "rb") as f:
     chains = pd.DataFrame({'name': chains.index, 'chain': chains})
     business = business[['business_id', 'is_open', 'name', 'latitude', 'longitude', 'stars', 'review_count', 'categories']]
 
-num_reviews = file_len("yelp_dataset/review.json")
 
-stars2017, review_count2017 = get_review_data("yelp_dataset/review.json", 0, num_reviews)
+with open("business_ids.pickle", "rb") as f:
+    business_ids = pickle.load(f)
+
+with open("yelp_dataset/business.json", "rb") as f:
+    business = pd.read_json(f, lines=True)
+business = business[['business_id', 'is_open', 'name', 'latitude', 'longitude', 'stars', 'review_count', 'categories']]
+business = business[business.apply(lambda row: row['business_id'] in business_ids, axis=1)]
+
+is_open = business.apply(lambda row: row['is_open'] == 1, axis=1)
+
+open_businesses = list()
+closed_businesses = list()
+
+for i, val in enumerate(is_open):
+    if val:
+        open_businesses.append(i)
+    else:
+        closed_businesses.append(i)
+
+random.shuffle(open_businesses)
+open_businesses = open_businesses[:len(closed_businesses)]
+dataset = open_businesses
+dataset.extend(closed_businesses)
+print(len(dataset), dataset[:10])
+business = business.iloc[dataset]
+print(business['is_open'].value_counts())
+
+business.to_csv('business_2.csv')
+
+
+exit(0)
+'''
+'''
+business = pd.read_csv('business_2.csv')
+ids = business['business_id'].to_numpy()
+reviews = []
+with open('yelp_dataset/review.json', "r") as f:
+    line = f.readline()
+    while line:
+        try:
+            dict = eval(line)
+            if dict['business_id'] in ids:
+                reviews.append(dict)
+        except:
+            pass
+        line = f.readline()
+reviews = pd.DataFrame(reviews)
+print(reviews.iloc[0])
+reviews.to_csv('yelp_dataset/review.csv')
+exit(0)
+
+''''''
+business = pd.read_csv('business_2.csv')
+ids = business['business_id'].to_numpy()
+with open("yelp_dataset/checkin.json", "rb") as f:
+    checkin = pd.read_json(f, lines=True)
+checkin = checkin[checkin.apply(lambda row: row['business_id'] in ids, axis=1)]
+earliest_checkin = 2020
+for _, row in checkin.iterrows():
+    row['date'] = row['date'].split(", ")
+    if int(row['date'][0][:4]) < earliest_checkin:
+        earliest_checkin = int(row['date'][0][:4])
+print(earliest_checkin)
+checkin.to_csv('checkin.csv')
+exit(0)
+'''
+with open("yelp_dataset/business.json", "rb") as f:
+    all_business = pd.read_json(f, lines=True)
+business = pd.read_csv("business_2.csv")
+
+chains = all_business['name'].value_counts()
+chains = pd.DataFrame({'name': chains.index, 'num_chain': chains})
+is_chain = chains.apply(lambda row: int(row['num_chain'] >= 3), axis=1)
+chains['chain'] = is_chain
+
+print(chains.iloc[0])
+
+stars2017, review_count2017 = {}, {}
+
+reviews = pd.read_csv("yelp_dataset/review.csv")
+for _, row in reviews.iterrows():
+    id = row['business_id']
+    try:
+        stars2017[id] += row['stars']
+        review_count2017[id] += 1
+    except:
+        stars2017[id] = row['stars']
+        review_count2017[id] = 1
+
 
 for id in stars2017.keys():
     stars2017[id] /= review_count2017[id]
@@ -132,74 +242,76 @@ business = pd.merge(business, stars_frame, on='business_id')
 business = pd.merge(business, review_count_frame, on='business_id')
 business = pd.merge(business, chains, on='name')
 
+print(business.iloc[0])
+
 with open("yelp_dataset/tip.json", "r") as f:
     tip_frame = pd.read_json(f, lines=True)
-    tips = tip_frame['business_id'].value_counts()
-    tips = pd.DataFrame({'business_id': tips.index, 'tips': tips})
-    business = pd.merge(business, tips, on='business_id')
-    tip_frame = tip_frame[tip_frame.apply(lambda tip: tip['date'].year == 2017, axis=1)]
-    tips2017 = tip_frame['business_id'].value_counts()
-    tips2017 = pd.DataFrame({'business_id': tips2017.index, 'tips2017': tips2017})
-    business = pd.merge(business, tips2017, on='business_id')
+tips = tip_frame['business_id'].value_counts()
+tips = pd.DataFrame({'business_id': tips.index, 'tips': tips})
+business = pd.merge(business, tips, on='business_id')
+tip_frame = tip_frame[tip_frame.apply(lambda tip: tip['date'].year == 2017, axis=1)]
+tips2017 = tip_frame['business_id'].value_counts()
+tips2017 = pd.DataFrame({'business_id': tips2017.index, 'tips2017': tips2017})
+business = pd.merge(business, tips2017, on='business_id')
 
 with open("yelp_dataset/checkin.json", "r") as f:
     checkin_frame = pd.read_json(f, lines=True)
-    business_ids = business['business_id'].tolist()
-    checkin, checkin2017 = ([0 for id in business_ids] for i in range(2))
-    for _, row in checkin_frame.iterrows():
-        id = row['business_id']
-        if id in business_ids:
-            i = business_ids.index(id)
-            timestamps = row['date'].split(", ")
-            checkin[i] = len(timestamps)
+business_ids = business['business_id'].tolist()
+checkin, checkin2017 = ([0 for id in business_ids] for i in range(2))
+for _, row in checkin_frame.iterrows():
+    id = row['business_id']
+    if id in business_ids:
+        i = business_ids.index(id)
+        timestamps = row['date'].split(", ")
+        checkin[i] = len(timestamps)
+        try:
             timestamps = [timestamp for timestamp in timestamps if int(timestamp[:4]) == 2017]
-            checkin2017[i] = len(timestamps)
-    business['checkin'] = checkin
-    business['checkin2017'] = checkin2017
+        except:
+            print(timestamps)
+            exit(0)
+        checkin2017[i] = len(timestamps)
+business['checkin'] = checkin
+business['checkin2017'] = checkin2017
 
 age = [float('inf') for i in range(business.shape[0])]
 id_list = business['business_id'].tolist()
 
-with open("yelp_dataset/review.json", "r") as f:
-    line = f.readline()
-    while line:
-        try:
-            dict = eval(line)
-            id = dict['business_id']
-            if id in id_list:
-                i = id_list.index(id)
-                year = int(dict['date'][:4])
-                if year < age[i]:
-                    age[i] = year
-        except:
-            pass
-        line = f.readline()
+reviews = pd.read_csv("yelp_dataset/review.csv")
+for _, row in reviews.iterrows():
+    if row['business_id'] in id_list:
+        i = id_list.index(row['business_id'])
+        if age[i] > int(row['date'][:4]):
+            age[i] = int(row['date'][:4])
 
 with open("yelp_dataset/tip.json", "rb") as f:
     tip = pd.read_json(f, lines=True)
-    for _, row in tip.iterrows():
-        if row['business_id'] in id_list:
-            i = id_list.index(row['business_id'])
-            if age[i] > row['date'].year:
-                age[i] = row['date'].year
+for _, row in tip.iterrows():
+    if row['business_id'] in id_list:
+        i = id_list.index(row['business_id'])
+        if age[i] > row['date'].year:
+            age[i] = row['date'].year
 
 
 with open("yelp_dataset/checkin.json", "rb") as f:
-    checkin = pd.read_json(f, lines=True)
-    for _, row in checkin.iterrows():
-        if row['business_id'] in id_list:
-            i = id_list.index(row['business_id'])
-            if age[i] > int(row['date'][:4]):
-                age[i] = int(row['date'][:4])
+    checkin_frame = pd.read_json(f, lines=True)
+for _, row in checkin_frame.iterrows():
+    if row['business_id'] in id_list:
+        i = id_list.index(row['business_id'])
+        if age[i] > int(row['date'][:4]):
+            age[i] = int(row['date'][:4])
+
 
 business['age'] = age
 
-business['stars'] = business.apply(lambda row: row['stars'] / row['age'], axis=1)
 business['review_count'] = business.apply(lambda row: row['review_count'] / row['age'], axis=1)
 business['tips'] = business.apply(lambda row: row['tips'] / row['age'], axis=1)
 business['checkin'] = business.apply(lambda row: row['checkin'] / row['age'], axis=1)
 
-map_list = [(i, business) for i in range(business.shape[0])]
+print(business.iloc[0])
+
+business.to_csv("business_2.csv")
+
+map_list = [(i, business, all_business) for i in range(business.shape[0])]
 pool = Pool()
 relative_features = pool.map(compute_relative_features, map_list)
 
@@ -216,8 +328,7 @@ business['category_density'] = [sublist[9] for sublist in relative_features]
 
 print(business.iloc[0])
 
-with open("business.csv", "w") as f:
-    business.to_csv(f)
+business.to_csv("business_2.csv")
 
 
 #split = int(num_reviews/12)
