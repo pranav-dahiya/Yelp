@@ -5,7 +5,7 @@
 \usepackage{float}
 \usepackage[backend=biber]{biblatex}
 
-\title{Untitled}
+\title{Predicting Restaurant Success From Yelp Data}
 \author{Pranav Dahiya}
 \date{Shiv Nadar University, India\\pd947@snu.edu.in}
 
@@ -99,6 +99,10 @@
   \section{Discussion}
 
   Three features that correlate highly with restaurant success are \emph{age, chain} and \emph{category\_density}. This confirms that the right location is essential for restaurant success. Having restaurants serving similar cuisines in the vicinity improves the probability of success. This might be an indicator of the tastes and preferences of consumers in the area. Other review based features, even when adjusted based on the mean value of surrounding restaurants do not correlate very well. This confirms the results of existing research that review based feature (both text and non-text) do not correlate very well with restaurant success. However, just as this research was able to use review data to infer the year of opening and closing for restaurants, this data can be used in other ways. While the tagged attributes of businesses in the dataset other than location and name can be useful for making a prediction regarding its success, not every restaurant is tagged with every attribute. Review data can be used to fill in these gaps. Future work should focus on filling up these gaps using NLP, which may lead to more features that correlate well with restaurant success, thereby including accuracy of predictions. Also, most features were positively correlated with restaurant success. This may imply that while there are some features that can be an indicator of restaurant success, detecting the failure of a restaurant in advance may be a more complicated problem. In conclusion, this research was able to use the relative value of various non-text features to achieve better results on a balanced learning set as compared to pre-existing state of the art.
+
+  \section{Acknowledgements}
+
+  I would like to acknowledge Yelp for their data, without which this project would not have been possible. I would also like to thank Prof. Harish Karnick from IIT Kanpur for his support and guidance
 
   \printbibliography
 
